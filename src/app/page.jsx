@@ -18,14 +18,14 @@ const Home = () =>{
    <>
    <NavbarComponent/>
     <div className="h-[100vh] w-[100%] items-center justify-center">
-      <div>
+      {/* <div>
        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJCu-bB3GriO126kr58X9_8VN9WIrmFrrmpQ&s" alt=""  className="w-[100%] h-[100%]"/>
        <img 
     src="shoe.png" 
     alt="Overlay" 
-    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[150px] h-[150px] object-cover  shadow-lg"
+    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[150px] h-[150px] object-cover  shadow-lg"
   />
-      </div>
+      </div> */}
     </div>
    </>
     

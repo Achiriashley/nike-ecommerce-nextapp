@@ -1,194 +1,186 @@
 'use client'
-import NavbarComponent from '@/components/navbar/NavbarComponent'
-import Image from 'next/image'
-import React, { useRef, useState } from 'react'
+import NavbarComponent from '@/src/components/navbar/NavbarComponent'
+import React, { useState, useRef } from 'react'
+import Image from "next/image"
 import { Notyf } from 'notyf';
-import 'notyf/notyf.min.css';
+import 'notyf/notyf.min.css'; // for React, Vue, and Svelte
 import emailjs from '@emailjs/browser';
 
-export default function Page() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [subject, setSubject] = useState("");
-  const [phone, setPhone] = useState("");
-  const [message, setMessage] = useState("");
+// Page component as default export
+const Page = () => {
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [subject, setSubject] = useState("");
+    const [phone, setPhone] = useState("");
+    const [message, setMessage] = useState("");
+    const [errors, setErrors] = useState({});
 
-  const [errors, setErrors] = useState({});
+    const validateName = (name) => /^[a-zA-Z\s]+$/.test(name); // Only letters and spaces
+    const validateEmail = (email) => /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email); // Basic email validation
+    const validatePhone = (phone) => /^\d{10}$/.test(phone); // Simple 10 digit phone number validation
+    const form = useRef();
+    const handleSubmit = (e) => {
+        const notyf = new Notyf({
+            duration: 3000,
+            position: {
+                x: "right",
+                y: "top",
+            },
+        });
 
-  // const notyf = new Notyf({
-  //   duration: 3000,
-  //   position: { x: 'right', y: 'top' },
-  // });
+        e.preventDefault();
 
-  // const validateForm = () => {
-  //   const errors = {};
+        const validationErrors = {};
 
-  //   // Name validation: required, only alphabetic characters
-  //   const nameRegex = /^[A-Za-z\s]+$/;
-  //   if (!name) {
-  //     errors.name = "Name is required.";
-  //   } else if (!nameRegex.test(name)) {
-  //     errors.name = "Name should contain only letters and spaces.";
-  //   }
+        // Name validation
+        if (!name) {
+            validationErrors.name = 'Name is required';
+        } else if (!validateName(name)) {
+            validationErrors.name = 'Name can only contain letters and spaces';
+        }
 
-  //   // Email validation: required, valid email format
-  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  //   if (!email) {
-  //     errors.email = "Email is required.";
-  //   } else if (!emailRegex.test(email)) {
-  //     errors.email = "Invalid email format.";
-  //   }
+        // Email validation
+        if (!email) {
+            validationErrors.email = 'Email is required';
+        } else if (!validateEmail(email)) {
+            validationErrors.email = 'Please enter a valid email address';
+        }
 
-  //   // Phone validation: required, only numeric characters
-  //   const phoneRegex = /^[0-9]+$/;
-  //   if (!phone) {
-  //     errors.phone = "Phone number is required.";
-  //   } else if (!phoneRegex.test(phone)) {
-  //     errors.phone = "Phone number should contain only numbers.";
-  //   } else if (phone.length < 10) {
-  //     errors.phone = "Phone number should be at least 10 digits.";
-  //   }
+        // Phone validation
+        if (!phone) {
+            validationErrors.phone = 'Phone number is required';
+        } else if (!validatePhone(phone)) {
+            validationErrors.phone = 'Please enter a valid 10-digit phone number';
+        }
 
-  //   // Subject validation: required, at least 4 characters
-  //   if (!subject) {
-  //     errors.subject = "Subject is required.";
-  //   } else if (subject.length < 4) {
-  //     errors.subject = "Subject must be at least 4 characters.";
-  //   }
+        // Message validation
+        if (!message) {
+            validationErrors.message = 'Message is required';
+        }
+        if (!subject || subject.length < 3) {
+            validationErrors.subject = 'invalid subject';
+        }
 
-  //   // Message validation: required, at least 10 characters
-  //   if (!message) {
-  //     errors.message = "Message is required.";
-  //   } else if (message.length < 10) {
-  //     errors.message = "Message must be at least 10 characters.";
-  //   }
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
 
-  //   setErrors(errors);
-  //   return Object.keys(errors).length === 0;
-  // };
-  // const form = useRef();
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
+        // If no validation errors, submit the form
+        
+        emailjs
+        .sendForm('service_2gk6d4c', 'template_n7ckemd', form.current, {
+          publicKey: '-rvP0Cne37tYCWaSO',
+        })
+        .then(
+          () => {
+            notyf.success('Form submitted successfully');
+          },
+          (error) => {
+            notyf.error('FAILED...', error.text);
+            console.log('FAILED...', error.text);
+          },
+        );
+        setName('');
+        setEmail('');
+        setPhone('');
+        setMessage('');
+        setSubject('');
+        setErrors({});
+    };
 
-  //   if (validateForm()) {      
+    return (
+        <div>
+            <NavbarComponent />
+            <div className='p-5'>
+                <div className='h-[100%] w-[100%]  flex  justify-center gap-5 mb-10'>
+                    <div className='w-[50%] relative rounded-lg overflow-hidden h-[400px] bg-slate-600 flex justify-center items-center '>
+                        <Image className='object-cover' src={'/img.jpg'} alt="contact image" fill objectFit='cover' objectPosition='center' />
+                        </div>
 
-  //     emailjs
-  //     .sendForm('service_n3nvlis', 'template_yuymtp8', form.current, {
-  //       publicKey: 'fBzhBz5xkmKXTLOOC',
-  //     })
-  //     .then(
-  //       () => {
-  //         notyf.success('Form submitted successfully');
-  //       },
-  //       (error) => {
-  //         notyf.error('FAILED...', error.text);
-  //       },
-  //     );
-  //     setName("");
-  //     setEmail("");
-  //     setPhone("");
-  //     setSubject("");
-  //     setMessage("");
-  //     setErrors({});
-  //   } else {
-  //     notyf.error('Please fix the errors in the form');
-  //   }
-  // };
+                    <form ref={form} onSubmit={handleSubmit} className='w-[50%] h-[100%] flex flex-col justify-between'>
+                        <h1 className="text-xl mb-2">Contact us</h1>
+                        
+                        <div className="flex gap-5 mb-5">
+                            <div className="w-[50%]">
+                                <input
+                                   name='name'
+                                    className={`w-[100%] p-4 bg-slate-900 outline-none text-white ${errors.name ? 'border-2 border-red-500' : ''}`}
+                                    value={name}
+                                    type="text"
+                                    placeholder='Name'
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                            </div>
+                            <div className="w-[50%]">
+                                <input
+                                    name='email'
+                                    className={`w-[100%] p-4 bg-slate-900 outline-none text-white ${errors.email ? 'border-2 border-red-500' : ''}`}
+                                    value={email}
+                                    type="email"
+                                    placeholder='Email'
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                            </div>
+                        </div>
 
-  return (
-    <div>
-      <NavbarComponent />
-      <div className="p-5">
-        <div className="h-[100%] w-full flex  justify-center gap-5">
-          <div className="w-1/2 relative rounded-lg overflow-hidden h-[400px] bg-slate-600 flex items-center justify-center">
-            <Image src="/img.jpg" alt="contact image" fill objectFit="cover" objectPosition="center" />
-          </div>
-          <div className="w-1/2 rounded-lg h-[100%] overflow-hidden bg-white flex items-center justify-center">
-            <div className="w-full h-full p-5">
-              <form  className="w-full h-full" ref={form}>
-                <h1 className="xl-text font-bold mb-3">Enter Contact</h1>
-                
-                <div className="flex gap-4">
-                  <div className="w-1/2">
-                    <input 
-                     name="name"
-                      type="text" 
-                      placeholder="Name" 
-                      className="w-full p-2 border border-black rounded outline-none text-black"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                    {errors.name && <p className="text-red-500">{errors.name}</p>}
-                  </div>
-                  <div className="w-1/2">
-                    <input 
-                    name = "email"
-                      type="text" 
-                      placeholder="Email" 
-                      className="w-full p-2 border border-black rounded outline-none text-black"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                    {errors.email && <p className="text-red-500">{errors.email}</p>}
-                  </div>
-                </div>
-                <br />
-                
-                <div className="flex gap-4">
-                  <div className="w-1/2">
-                    <input 
-                    name = "phone"
-                      type="text" 
-                      placeholder="Telephone" 
-                      className="w-full p-2 border border-black rounded outline-none text-black"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                    />
-                    {errors.phone && <p className="text-red-500">{errors.phone}</p>}
-                  </div>
-                  <div className="w-1/2">
-                    <input 
-                    name = "subject"
-                      type="text" 
-                      placeholder="Subject" 
-                      className="w-full p-2 border border-black rounded outline-none text-black"
-                      value={subject}
-                      onChange={(e) => setSubject(e.target.value)}
-                    />
-                    {errors.subject && <p className="text-red-500">{errors.subject}</p>}
-                  </div>
-                </div>
-                <br />
-                
-                <div className="w-full">
-                  <textarea
-                    name="message"
-                    placeholder="Message"
-                    rows={6}
-                    className="w-full px-5 pt-3 rounded border border-black outline-none mb-1 text-black"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                  ></textarea>
-                  {errors.message && <p className="text-red-500">{errors.message}</p>}
+                        <div className="flex gap-5 mb-5">
+                            <div className="w-[50%]">
+                                <input
+                                   name='phone'
+                                    className={`w-[100%] p-4 bg-slate-900 outline-none text-white ${errors.phone ? 'border-2 border-red-500' : ''}`}
+                                    value={phone}
+                                    type="text"
+                                    placeholder='Phone'
+                                    onChange={(e) => setPhone(e.target.value)}
+                                />
+                                {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+                            </div>
+                            <div className="w-[50%]">
+                                <input
+                                    name='subject'
+                                    className={`w-[100%] p-4 bg-slate-900 outline-none text-white ${errors.subject ? 'border-2 border-red-500' : ''}`}
+                                    value={subject}
+                                    type="text"
+                                    placeholder='Subject (optional)'
+                                    onChange={(e) => setSubject(e.target.value)}
+                                />
+                                {errors.subject && <p className="text-red-500 text-sm mt-1">{errors.subject}</p>}
+                            </div>
+                        </div>
+
+                        <div className="w-[100%]">
+                            <textarea
+                                name='message'
+                                className={`w-[100%] h-[200px] px-3 py-3 bg-slate-900 outline-none text-white ${errors.message ? 'border-2 border-red-500' : ''}`}
+                                placeholder='Message'
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                            />
+                            {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
+                        </div>
+
+                        {/* The submit button is placed at the bottom of the form and always visible */}
+                        <button type='submit' className="w-[100%] bg-[#2955BB] p-3 mt-5">Send message</button>
+                    </form>
                 </div>
 
-                <button type="submit" className="bg-black w-full text-white p-3 mb-2">Send</button>
-              </form>
+                <div className='h-[50vh] w-[100%] bg-lime-800'>
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d250.09042906692608!2d9.695180069064664!3d4.042658402349319!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1061138910bc3aff%3A0x7b5d5c6ad0bcf7f!2sSeven%20Advanced%20Academy!5e0!3m2!1sen!2srw!4v1731057270390!5m2!1sen!2srw"
+                        width="100%" 
+                        height="100%" 
+                        style={{ border: 0 }} 
+                        allowFullScreen="" 
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                    />
+                </div>
             </div>
-          </div>
         </div>
-        <div className="h-[50vh] w-full bg-lime-800">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7959.781822707938!2d9.695225200000003!3d4.042677700000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1061138910bc3aff%3A0x7b5d5c6ad0bcf7f!2sSeven%20Advanced%20Academy!5e0!3m2!1sen!2srw!4v1731057290227!5m2!1sen!2srw"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen=""
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
-        </div>
-      </div>
-    </div>
-  )
-}
+    );
+};
+// Ensure the component is default-exported
+export default Page;
