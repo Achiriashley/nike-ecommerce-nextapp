@@ -1,0 +1,12 @@
+.title{
+    font-size: 40px;
+    font-weight: 800;
+   color: brown;
+}
+.button{
+    background-color: brown;
+    padding:20px 10px;
+    color: white;
+    border-radius: 9px;
+    margin-left: 20px;
+}
