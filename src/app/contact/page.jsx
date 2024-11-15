@@ -1,10 +1,11 @@
 'use client'
-import NavbarComponent from '@/src/components/navbar/NavbarComponent'
+import NavbarComponent from '@/components/navbar/NavbarComponent';
 import React, { useState, useRef } from 'react'
 import Image from "next/image"
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css'; // for React, Vue, and Svelte
 import emailjs from '@emailjs/browser';
+
 
 // Page component as default export
 const Page = () => {
@@ -91,7 +92,7 @@ const Page = () => {
 
     return (
         <div>
-            <NavbarComponent />
+            <NavbarComponent/>
             <div className='p-5'>
                 <div className='h-[100%] w-[100%]  flex  justify-center gap-5 mb-10'>
                     <div className='w-[50%] relative rounded-lg overflow-hidden h-[400px] bg-slate-600 flex justify-center items-center '>
