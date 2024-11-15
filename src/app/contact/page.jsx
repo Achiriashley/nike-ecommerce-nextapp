@@ -15,85 +15,85 @@ export default function Page() {
 
   const [errors, setErrors] = useState({});
 
-  const notyf = new Notyf({
-    duration: 3000,
-    position: { x: 'right', y: 'top' },
-  });
+  // const notyf = new Notyf({
+  //   duration: 3000,
+  //   position: { x: 'right', y: 'top' },
+  // });
 
-  const validateForm = () => {
-    const errors = {};
+  // const validateForm = () => {
+  //   const errors = {};
 
-    // Name validation: required, only alphabetic characters
-    const nameRegex = /^[A-Za-z\s]+$/;
-    if (!name) {
-      errors.name = "Name is required.";
-    } else if (!nameRegex.test(name)) {
-      errors.name = "Name should contain only letters and spaces.";
-    }
+  //   // Name validation: required, only alphabetic characters
+  //   const nameRegex = /^[A-Za-z\s]+$/;
+  //   if (!name) {
+  //     errors.name = "Name is required.";
+  //   } else if (!nameRegex.test(name)) {
+  //     errors.name = "Name should contain only letters and spaces.";
+  //   }
 
-    // Email validation: required, valid email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) {
-      errors.email = "Email is required.";
-    } else if (!emailRegex.test(email)) {
-      errors.email = "Invalid email format.";
-    }
+  //   // Email validation: required, valid email format
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   if (!email) {
+  //     errors.email = "Email is required.";
+  //   } else if (!emailRegex.test(email)) {
+  //     errors.email = "Invalid email format.";
+  //   }
 
-    // Phone validation: required, only numeric characters
-    const phoneRegex = /^[0-9]+$/;
-    if (!phone) {
-      errors.phone = "Phone number is required.";
-    } else if (!phoneRegex.test(phone)) {
-      errors.phone = "Phone number should contain only numbers.";
-    } else if (phone.length < 10) {
-      errors.phone = "Phone number should be at least 10 digits.";
-    }
+  //   // Phone validation: required, only numeric characters
+  //   const phoneRegex = /^[0-9]+$/;
+  //   if (!phone) {
+  //     errors.phone = "Phone number is required.";
+  //   } else if (!phoneRegex.test(phone)) {
+  //     errors.phone = "Phone number should contain only numbers.";
+  //   } else if (phone.length < 10) {
+  //     errors.phone = "Phone number should be at least 10 digits.";
+  //   }
 
-    // Subject validation: required, at least 4 characters
-    if (!subject) {
-      errors.subject = "Subject is required.";
-    } else if (subject.length < 4) {
-      errors.subject = "Subject must be at least 4 characters.";
-    }
+  //   // Subject validation: required, at least 4 characters
+  //   if (!subject) {
+  //     errors.subject = "Subject is required.";
+  //   } else if (subject.length < 4) {
+  //     errors.subject = "Subject must be at least 4 characters.";
+  //   }
 
-    // Message validation: required, at least 10 characters
-    if (!message) {
-      errors.message = "Message is required.";
-    } else if (message.length < 10) {
-      errors.message = "Message must be at least 10 characters.";
-    }
+  //   // Message validation: required, at least 10 characters
+  //   if (!message) {
+  //     errors.message = "Message is required.";
+  //   } else if (message.length < 10) {
+  //     errors.message = "Message must be at least 10 characters.";
+  //   }
 
-    setErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-  const form = useRef();
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  //   setErrors(errors);
+  //   return Object.keys(errors).length === 0;
+  // };
+  // const form = useRef();
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
 
-    if (validateForm()) {      
+  //   if (validateForm()) {      
 
-      emailjs
-      .sendForm('service_n3nvlis', 'template_yuymtp8', form.current, {
-        publicKey: 'fBzhBz5xkmKXTLOOC',
-      })
-      .then(
-        () => {
-          notyf.success('Form submitted successfully');
-        },
-        (error) => {
-          notyf.error('FAILED...', error.text);
-        },
-      );
-      setName("");
-      setEmail("");
-      setPhone("");
-      setSubject("");
-      setMessage("");
-      setErrors({});
-    } else {
-      notyf.error('Please fix the errors in the form');
-    }
-  };
+  //     emailjs
+  //     .sendForm('service_n3nvlis', 'template_yuymtp8', form.current, {
+  //       publicKey: 'fBzhBz5xkmKXTLOOC',
+  //     })
+  //     .then(
+  //       () => {
+  //         notyf.success('Form submitted successfully');
+  //       },
+  //       (error) => {
+  //         notyf.error('FAILED...', error.text);
+  //       },
+  //     );
+  //     setName("");
+  //     setEmail("");
+  //     setPhone("");
+  //     setSubject("");
+  //     setMessage("");
+  //     setErrors({});
+  //   } else {
+  //     notyf.error('Please fix the errors in the form');
+  //   }
+  // };
 
   return (
     <div>
