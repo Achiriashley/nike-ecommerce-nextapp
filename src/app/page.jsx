@@ -3,7 +3,10 @@ import NavbarComponent from '@/components/navbar/NavbarComponent';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 // import Reeact from './dashboard/page';
-import { Image } from 'next/image';
+import Image from 'next/image';
+
+import HeroComponent from '@/components/hero/HeroComponent';
+import CardComponents from '@/components/card/CardComponents';
 
 const Home = () =>{
  const [counter, setCounter] = useState(0); 
@@ -17,16 +20,17 @@ const Home = () =>{
 
    <>
    <NavbarComponent/>
-    <div className="h-[100vh] w-[100%] items-center justify-center">
-      {/* <div>
-       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJCu-bB3GriO126kr58X9_8VN9WIrmFrrmpQ&s" alt=""  className="w-[100%] h-[100%]"/>
-       <img 
-    src="shoe.png" 
-    alt="Overlay" 
-    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[150px] h-[150px] object-cover  shadow-lg"
-  />
-      </div> */}
-    </div>
+    <div className="h-[100%] w-[100%] items-center justify-center">
+      <HeroComponent/>
+      <div className="h-[100%] w-[100%] flex items-center justify-center p-5  flex-wrap gap-5">
+        <CardComponents/>
+        <CardComponents/>
+        <CardComponents/>
+        <CardComponents/>
+        <CardComponents/>
+        </div>
+      </div>
+   
    </>
     
   );

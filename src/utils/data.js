@@ -1,0 +1,51 @@
+const products = [
+    {
+        id: 1,
+        title: "Air Jordan",
+        price: "$100",
+        category: "Men's shoes",
+        image: "images/img1.jpeg",
+    },
+    {
+        id: 2,
+        title: "Air Jordan 3",
+        price: "$100",
+        category: "Men's shoes",
+        image: "images/img2.jpeg",
+    },
+    {
+        id: 3,
+        title: "Air Jordan 5",
+        price: "$100",
+        category: "Men's shoes",
+        image: "images/img3.jpeg",
+    },
+    {
+        id: 4,
+        title: "New Balance",
+        price: "$100",
+        category: "Men's shoes",
+        image: "images/img4.jpeg",
+    },
+    {
+        id: 5,
+        title: "Air balance",
+        price: "$100",
+        category: "Men's shoes",
+        image: "images/img5.jpeg",
+    },
+    {
+        id: 6,
+        title: "Air balance",
+        price: "$100",
+        category: "Men's shoes",
+        image: "images/img6.jpeg",
+    },
+    {
+        id: 7,
+        title: "Air balance",
+        price: "$100",
+        category: "Men's shoes",
+        image: "images/img7.jpeg",
+    },
+];
