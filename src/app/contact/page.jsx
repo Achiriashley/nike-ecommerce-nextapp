@@ -105,7 +105,7 @@ export default function Page() {
           </div>
           <div className="w-1/2 rounded-lg h-[100%] overflow-hidden bg-white flex items-center justify-center">
             <div className="w-full h-full p-5">
-              <form onSubmit={handleSubmit} className="w-full h-full" ref={form}>
+              <form  className="w-full h-full" ref={form}>
                 <h1 className="xl-text font-bold mb-3">Enter Contact</h1>
                 
                 <div className="flex gap-4">
