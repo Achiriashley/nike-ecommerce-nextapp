@@ -18,7 +18,9 @@ export default function NavbarComponent() {
         <Link href="#">Best Sellers</Link>
       </div>
       <div className="flex gap-5  cursor-pointer">
-        <IoBagHandleOutline color="#f80"  size={30} />
+        <IoBagHandleOutline color="#f80"  size={30}
+        
+         />
         <IoHeartOutline color="#f80"  size={30}/>
       </div>
     </div>
