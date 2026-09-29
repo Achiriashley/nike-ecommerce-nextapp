@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import styles from "./page.module.css";
 import Sidebar from "@/components/sidebar/Sidebar";
-import SideNav from "@/components/sideNav/SideNav";
+import SideNav from "@/components/SideNav/SideNav";
 import Image from "next/image";
 import ProductsTableComponent from "@/components/productsTable/productsTableComponent";
 
