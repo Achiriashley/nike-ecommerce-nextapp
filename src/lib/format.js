@@ -1,12 +1,13 @@
-import { CURRENCY_SYMBOL } from "@/config/store";
+import { CURRENCY_LABEL } from "@/config/store";
 
-export const formatPrice = (value) => {
-  const n = Number(value) || 0;
-  return `${CURRENCY_SYMBOL}${n.toLocaleString("en-US", {
-    minimumFractionDigits: Number.isInteger(n) ? 0 : 2,
-    maximumFractionDigits: 2,
-  })}`;
+// 72000 -> "72 000 FCFA". Grouping is done by hand (with no-break spaces) so the
+// server and every browser render exactly the same text.
+export const formatNumber = (value) => {
+  const n = Math.round(Number(value) || 0);
+  return `${n < 0 ? "-" : ""}${String(Math.abs(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0")}`;
 };
+
+export const formatPrice = (value) => `${formatNumber(value)}\u00a0${CURRENCY_LABEL}`;
 
 export const discountPercent = (price, compareAtPrice) =>
   compareAtPrice && compareAtPrice > price

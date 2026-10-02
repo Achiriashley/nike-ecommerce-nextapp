@@ -29,6 +29,8 @@ export const parseProductInput = (body) => {
 
   if (title.length < 2) return { error: "Title is required" };
   if (!Number.isFinite(price) || price <= 0) return { error: "Price must be a positive number" };
+  if (!Number.isInteger(price) || (compareAtPrice !== null && !Number.isInteger(compareAtPrice)))
+    return { error: "Prices are in FCFA and must be whole numbers" };
   if (compareAtPrice !== null && (!Number.isFinite(compareAtPrice) || compareAtPrice <= price))
     return { error: "Compare-at price must be higher than the price" };
   if (stock !== null && (!Number.isInteger(stock) || stock < 0)) return { error: "Stock must be a whole number" };

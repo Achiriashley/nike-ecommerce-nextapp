@@ -1,9 +1,10 @@
 import { matchesQuery } from "@/lib/search";
+import { formatNumber, formatPrice } from "@/lib/format";
 
 export const PRICE_BUCKETS = [
-  { id: "under-100", label: "Under $100", test: (p) => p < 100 },
-  { id: "100-150", label: "$100 – $150", test: (p) => p >= 100 && p <= 150 },
-  { id: "over-150", label: "Over $150", test: (p) => p > 150 },
+  { id: "under-60000", label: `Under ${formatPrice(60000)}`, test: (p) => p < 60000 },
+  { id: "60000-90000", label: `${formatNumber(60000)} – ${formatPrice(90000)}`, test: (p) => p >= 60000 && p <= 90000 },
+  { id: "over-90000", label: `Over ${formatPrice(90000)}`, test: (p) => p > 90000 },
 ];
 
 export const SORTS = [

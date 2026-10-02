@@ -1,11 +1,12 @@
 // Store-wide settings. Policy values here are shown to shoppers and used by
 // checkout, so keep them in sync with what the business actually offers.
 export const STORE_NAME = "Nike Store";
-export const CURRENCY_SYMBOL = "$";
-// Currency sent to the payment providers (unchanged from the original checkout).
+// All prices are in Central African CFA francs (FCFA / XAF), whole numbers only.
+export const CURRENCY_LABEL = "FCFA";
+// Currency code sent to the payment providers.
 export const PAYMENT_CURRENCY = "XAF";
-export const FREE_SHIPPING_THRESHOLD = 150;
-export const FLAT_SHIPPING = 8;
+export const FREE_SHIPPING_THRESHOLD = 100000;
+export const FLAT_SHIPPING = 2500;
 export const RETURN_DAYS = 30;
 export const MAX_QUANTITY = 10;
 

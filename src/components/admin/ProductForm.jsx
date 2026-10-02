@@ -108,8 +108,8 @@ export default function ProductForm({ product, onSaved, onCancel }) {
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Title" htmlFor="pf-title"><Input id="pf-title" required value={form.title} onChange={set("title")} placeholder="Air Force 1 '07" /></Field>
         <Field label="Colourway" htmlFor="pf-colorway"><Input id="pf-colorway" value={form.colorway} onChange={set("colorway")} placeholder="Triple White" /></Field>
-        <Field label="Price ($)" htmlFor="pf-price"><Input id="pf-price" required type="number" min="0.01" step="0.01" value={form.price} onChange={set("price")} /></Field>
-        <Field label="Compare-at price ($)" htmlFor="pf-compare" hint="Set higher than price to show a sale."><Input id="pf-compare" type="number" min="0" step="0.01" value={form.compareAtPrice ?? ""} onChange={set("compareAtPrice")} /></Field>
+        <Field label="Price (FCFA)" htmlFor="pf-price"><Input id="pf-price" required type="number" min="1" step="1" value={form.price} onChange={set("price")} /></Field>
+        <Field label="Compare-at price (FCFA)" htmlFor="pf-compare" hint="Set higher than price to show a sale."><Input id="pf-compare" type="number" min="0" step="1" value={form.compareAtPrice ?? ""} onChange={set("compareAtPrice")} /></Field>
         <Field label="Category" htmlFor="pf-category">
           <Input id="pf-category" list="pf-categories" required value={form.category} onChange={set("category")} />
           <datalist id="pf-categories">{CATEGORIES.map((c) => <option key={c.slug} value={c.slug} />)}</datalist>

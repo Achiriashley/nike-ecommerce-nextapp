@@ -71,4 +71,11 @@ when the shopper returns to the success page, and when they open their account p
 
 ### Store settings
 
-Delivery threshold, flat delivery fee, return window and the store name live in `src/config/store.js`.
+All prices are in FCFA (XAF). Delivery threshold, flat delivery fee, return window and the store name live in `src/config/store.js`.
+
+If your database still has products priced in US dollars (imported before the switch to FCFA), convert them once:
+
+```bash
+npm run prices:fcfa            # preview
+npm run prices:fcfa -- --apply # save (uses 600 FCFA per dollar; set USD_TO_FCFA to change)
+```

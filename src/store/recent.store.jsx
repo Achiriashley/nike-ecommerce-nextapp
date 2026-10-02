@@ -14,6 +14,7 @@ export const useStoreRecent = create(
         })),
       clear: () => set({ items: [] }),
     }),
-    { name: "store-recently-viewed", storage: createJSONStorage(() => localStorage), skipHydration: true }
+    // Version 2: prices switched from USD to FCFA, so older history is discarded.
+    { name: "store-recently-viewed", version: 2, storage: createJSONStorage(() => localStorage), skipHydration: true }
   )
 );

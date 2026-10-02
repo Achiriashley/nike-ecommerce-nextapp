@@ -96,7 +96,7 @@ export default function SiteFooter() {
       <div className="border-t border-white/10">
         <div className="container flex flex-col gap-2 py-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} {STORE_NAME}. All rights reserved.</p>
-          <p>Prices shown in USD. Secure payments via Coinbase Commerce and PayUnit.</p>
+          <p>All prices in FCFA. Pay securely with MTN Mobile Money, Orange Money or crypto.</p>
         </div>
       </div>
     </footer>
