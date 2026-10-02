@@ -1,37 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Nike Store
 
-## Getting Started
+A sneaker storefront built with Next.js (App Router), Clerk, MongoDB and Tailwind CSS.
 
-First, run the development server:
+## Features
+
+**Storefront**
+- Home page with search, category tiles, trending and sale rails, a product spotlight and recently viewed items
+- Shop page with search, filters (gender, category, price, size, sale) kept in the URL, sorting and a mobile filter sheet
+- Product pages with an image gallery (swipeable on mobile), colourway switcher, size picker, stock badges, sharing and related products
+- Customer reviews (signed-in Clerk users can write, edit and delete one review per product)
+- Bag with sizes, quantities, free-delivery progress and live re-pricing; slide-out bag drawer
+- Wishlist and recently viewed history, saved in the browser
+- Checkout with mobile money (PayUnit) or crypto (Coinbase Commerce); totals are calculated on the server
+- Account page with order history for signed-in customers
+- Newsletter sign-up, help centre with FAQ and contact form (EmailJS)
+
+**Admin** (`/admin/login`)
+- Overview of revenue, orders, products, subscribers, low stock and top-rated products
+- Create, edit and delete products (image upload or URL), and import the starter catalog
+- Order list with status updates (pending → paid → shipped → delivered / cancelled)
+- Newsletter subscribers
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create `.env.local`:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+MONGO_DB=mongodb+srv://...                # MongoDB connection string
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...  # Clerk
+CLERK_SECRET_KEY=sk_...
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Admin dashboard (the defaults are the original demo credentials; change them in production)
+ADMIN_EMAIL=you@example.com
+ADMIN_PASSWORD=a-strong-password
+ADMIN_SESSION_SECRET=a-long-random-string
 
-## Learn More
+# Payments
+COINBASE_API_KEY=...                      # NEXT_PUBLIC_COINBASE_API_KEY is also accepted
+PAYUNIT_API_KEY=...                       # PayUnit falls back to the original sandbox credentials
+PAYUNIT_API_USER=...
+PAYUNIT_API_PASSWORD=...
+PAYUNIT_MODE=test
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Products
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Until MongoDB has products, the store shows the 24-product starter catalog in `src/data/catalog.js`.
+Import it into the database from the admin dashboard (**Import starter catalog**) or with:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run seed
+```
 
-## Deploy on Vercel
+Once the database has products, the store shows only those, and they can be managed from the admin dashboard.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Store settings
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
+Delivery threshold, flat delivery fee, return window and the store name live in `src/config/store.js`.
