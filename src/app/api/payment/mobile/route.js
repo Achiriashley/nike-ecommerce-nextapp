@@ -1,7 +1,7 @@
 import axios from "axios";
 import crypto from "crypto";
 import { BASE_URL } from "@/utils/constants";
-import { priceCart, createPendingOrder, attachPaymentUrl, discardOrder, originOf } from "@/lib/server/checkout";
+import { priceCart, createPendingOrder, attachPaymentUrl, discardOrder, originOf, providerError } from "@/lib/server/checkout";
 import { getShopper } from "@/lib/server/shopper";
 import { jsonError, readJson } from "@/lib/server/http";
 import { NextResponse } from "next/server";
@@ -66,6 +66,6 @@ export const POST = async (request) => {
     } catch (error) {
         console.log("error for mobile payment", error.response?.data ?? error.message);
         await discardOrder(order);
-        return jsonError("Could not start mobile money checkout. Please try again.", 502);
+        return jsonError(`PayUnit could not start the checkout: ${providerError(error)}`, 502);
     }
 };

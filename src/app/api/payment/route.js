@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { priceCart, createPendingOrder, attachPaymentUrl, discardOrder, originOf } from "@/lib/server/checkout";
+import { priceCart, createPendingOrder, attachPaymentUrl, discardOrder, originOf, providerError } from "@/lib/server/checkout";
 import { getShopper } from "@/lib/server/shopper";
 import { jsonError, readJson } from "@/lib/server/http";
 import { STORE_NAME } from "@/config/store";
@@ -40,6 +40,6 @@ export const POST = async (request) => {
     } catch (error) {
         console.error('error from coinBase func:', error.response?.data ?? error.message);
         await discardOrder(order);
-        return jsonError("Could not start crypto checkout. Please try again.", 502);
+        return jsonError(`Coinbase could not start the checkout: ${providerError(error)}`, 502);
     }
 };

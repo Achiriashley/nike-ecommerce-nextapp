@@ -77,3 +77,12 @@ export const discardOrder = async (order) => {
     console.error("Could not discard order:", error.message);
   }
 };
+
+// Best-effort, human-readable reason from a failed payment provider request.
+export const providerError = (error) => {
+  const data = error.response?.data;
+  const detail =
+    data?.error?.message ?? data?.message ?? data?.error ?? (typeof data === "string" ? data : null) ?? error.message;
+  const status = error.response?.status ? ` (HTTP ${error.response.status})` : "";
+  return `${String(detail).slice(0, 200)}${status}`;
+};
