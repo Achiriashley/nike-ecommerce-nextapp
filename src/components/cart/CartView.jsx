@@ -71,6 +71,7 @@ function Summary({ cart }) {
             {pending === "mobile" ? <Loader2 className="animate-spin" aria-hidden /> : <Smartphone aria-hidden />}
             Pay with mobile money
           </Button>
+          <p className="-mt-1 text-center text-xs text-neutral-500">MTN Mobile Money or Orange Money</p>
           <Button size="lg" variant="outline" onClick={() => checkout("crypto")} disabled={Boolean(pending) || !cart.purchasable.length}>
             {pending === "crypto" ? <Loader2 className="animate-spin" aria-hidden /> : <Bitcoin aria-hidden />}
             Pay with crypto

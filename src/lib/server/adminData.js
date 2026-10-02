@@ -13,6 +13,7 @@ const serializeOrder = (o) => ({
   total: o.total,
   currency: o.currency,
   provider: o.provider,
+  gateway: o.gateway ?? null,
   status: o.status,
   paymentUrl: o.paymentUrl ?? null,
   createdAt: o.createdAt?.toISOString() ?? null,

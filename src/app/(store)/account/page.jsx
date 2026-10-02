@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { getShopper } from "@/lib/server/shopper";
 import connectDB, { isDbConfigured } from "@/db/connectDB";
 import Order from "@/model/Order";
+import { syncCampayPayment } from "@/lib/server/campay";
 import { formatDate, formatPrice } from "@/lib/format";
 import { ORDER_STATUS_TONES, orderRef } from "@/lib/orders";
 
@@ -19,6 +20,9 @@ const loadOrders = async (userId) => {
   if (!isDbConfigured()) return { orders: [], available: false };
   try {
     await connectDB();
+    // Check any Campay payments still waiting for confirmation before listing orders.
+    const waiting = await Order.find({ userId, status: "pending", gateway: "campay" }, { _id: 1 }).limit(5).lean();
+    await Promise.all(waiting.map((o) => syncCampayPayment({ orderId: String(o._id) })));
     const orders = await Order.find({ userId }).sort({ createdAt: -1 }).limit(50).lean();
     return { orders, available: true };
   } catch {

@@ -11,7 +11,7 @@ A sneaker storefront built with Next.js (App Router), Clerk, MongoDB and Tailwin
 - Customer reviews (signed-in Clerk users can write, edit and delete one review per product)
 - Bag with sizes, quantities, free-delivery progress and live re-pricing; slide-out bag drawer
 - Wishlist and recently viewed history, saved in the browser
-- Checkout with mobile money (PayUnit) or crypto (Coinbase Commerce); totals are calculated on the server
+- Checkout with mobile money (Campay for MTN/Orange, or PayUnit) or crypto (Coinbase Commerce); totals are calculated on the server and Campay payments are confirmed automatically
 - Account page with order history for signed-in customers
 - Newsletter sign-up, help centre with FAQ and contact form (EmailJS)
 
@@ -43,6 +43,9 @@ ADMIN_SESSION_SECRET=a-long-random-string
 # Payments
 SITE_URL=https://your-store.example.com # public HTTPS address; payment providers send shoppers back here
 COINBASE_API_KEY=...                      # NEXT_PUBLIC_COINBASE_API_KEY is also accepted
+CAMPAY_USERNAME=...                       # Campay app API username + password (or CAMPAY_TOKEN)
+CAMPAY_PASSWORD=...                       # When set, "Pay with mobile money" uses Campay (MTN + Orange)
+CAMPAY_MODE=demo                          # demo (test payments capped at 25 XAF) or live
 PAYUNIT_API_KEY=...                       # PayUnit falls back to the original sandbox credentials
 PAYUNIT_API_USER=...
 PAYUNIT_API_PASSWORD=...
@@ -59,6 +62,12 @@ npm run seed
 ```
 
 Once the database has products, the store shows only those, and they can be managed from the admin dashboard.
+
+### Campay webhook
+
+In the Campay dashboard, set the webhook URL to `https://<your-site>/api/payment/campay/webhook`.
+Orders are marked paid after the app confirms the payment with Campay's API (on the webhook,
+when the shopper returns to the success page, and when they open their account page).
 
 ### Store settings
 

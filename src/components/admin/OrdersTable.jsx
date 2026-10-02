@@ -77,7 +77,10 @@ export default function OrdersTable({ orders }) {
                         <p className="text-neutral-500">{formatDate(o.createdAt)}</p>
                       </td>
                       <td className="px-4 py-3 text-neutral-700">{o.email ?? <span className="text-neutral-400">Guest</span>}</td>
-                      <td className="px-4 py-3 text-neutral-700">{o.provider === "crypto" ? "Crypto" : "Mobile money"}</td>
+                      <td className="px-4 py-3 text-neutral-700">
+                        {o.provider === "crypto" ? "Crypto" : "Mobile money"}
+                        {o.gateway && <span className="block text-xs capitalize text-neutral-500">{o.gateway}</span>}
+                      </td>
                       <td className="px-4 py-3 text-right font-semibold tabular-nums text-ink">{formatPrice(o.total)}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">

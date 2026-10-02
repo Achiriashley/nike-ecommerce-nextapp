@@ -53,10 +53,10 @@ export const createPendingOrder = async ({ priced, provider, userId, email }) =>
   }
 };
 
-export const attachPaymentUrl = async (order, paymentUrl) => {
+export const attachPaymentUrl = async (order, paymentUrl, extra = {}) => {
   if (!order) return;
   try {
-    await Order.updateOne({ _id: order._id }, { paymentUrl });
+    await Order.updateOne({ _id: order._id }, { paymentUrl, ...extra });
   } catch (error) {
     console.error("Could not update order:", error.message);
   }

@@ -21,6 +21,9 @@ const orderSchema = new Schema({
     total: {type: Number, required: true},
     currency: {type: String, required: true},
     provider: {type: String, enum: ["crypto", "mobile"], required: true},
+    // Which service handled a "mobile" payment (campay or payunit), and its transaction reference.
+    gateway: {type: String},
+    paymentReference: {type: String, index: true},
     paymentUrl: {type: String},
     status: {type: String, enum: ORDER_STATUSES, default: "pending"},
 }, {timestamps: true});

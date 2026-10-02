@@ -3,10 +3,13 @@ import crypto from "crypto";
 import { BASE_URL } from "@/utils/constants";
 import { priceCart, createPendingOrder, attachPaymentUrl, discardOrder, returnUrls, providerError } from "@/lib/server/checkout";
 import { getShopper } from "@/lib/server/shopper";
+import { isCampayConfigured, campayAmount, createPaymentLink } from "@/lib/server/campay";
+import { STORE_NAME } from "@/config/store";
 import { jsonError, readJson } from "@/lib/server/http";
 import { NextResponse } from "next/server";
 
-// PayUnit mobile-money checkout, moved server-side from utils/helpers.js.
+// Mobile-money checkout. Uses Campay when its credentials are set, otherwise PayUnit.
+// PayUnit checkout, moved server-side from utils/helpers.js.
 // The fallbacks are the sandbox credentials the project already used; set the
 // env vars to use your own account.
 const credentials = () => ({
@@ -17,9 +20,38 @@ const credentials = () => ({
     notifyUrl: process.env.PAYUNIT_NOTIFY_URL || "https://webhook.site/d457b2f3-dd71-4f04-9af5-e2fcf3be8f34",
 });
 
+// Campay: hosted page where the shopper pays with MTN Mobile Money or Orange Money.
+const campayCheckout = async (request, priced) => {
+    const shopper = await getShopper();
+    const order = await createPendingOrder({ priced, provider: "mobile", userId: shopper?.userId, email: shopper?.email });
+    if (!order) return jsonError("Mobile money checkout needs the database to record your order. Please try again later.", 503);
+    const urls = returnUrls(request, order);
+    try {
+        const { link, reference } = await createPaymentLink({
+            amount: campayAmount(priced.total),
+            description: `${STORE_NAME} order ${String(order._id).slice(-8).toUpperCase()}`,
+            externalReference: String(order._id),
+            redirectUrl: urls.success,
+            // Failed payments also land on the success page, which shows the real outcome.
+            failureRedirectUrl: urls.success,
+        });
+        if (!link) {
+            await discardOrder(order);
+            return jsonError("Campay did not return a payment link", 502);
+        }
+        await attachPaymentUrl(order, link, { gateway: "campay", paymentReference: reference });
+        return NextResponse.json({ url: link, orderId: String(order._id) });
+    } catch (error) {
+        console.log("error for campay payment", error.response?.data ?? error.message);
+        await discardOrder(order);
+        return jsonError(`Campay could not start the checkout: ${providerError(error)}`, 502);
+    }
+};
+
 export const POST = async (request) => {
     const priced = await priceCart((await readJson(request))?.items);
     if (priced.error) return jsonError(priced.error);
+    if (isCampayConfigured()) return campayCheckout(request, priced);
 
     const shopper = await getShopper();
     const order = await createPendingOrder({ priced, provider: "mobile", userId: shopper?.userId, email: shopper?.email });
@@ -62,7 +94,7 @@ export const POST = async (request) => {
             await discardOrder(order);
             return jsonError("The payment provider did not return a checkout link", 502);
         }
-        await attachPaymentUrl(order, url);
+        await attachPaymentUrl(order, url, { gateway: "payunit" });
         return NextResponse.json({ url, orderId: order ? String(order._id) : null });
     } catch (error) {
         console.log("error for mobile payment", error.response?.data ?? error.message);
