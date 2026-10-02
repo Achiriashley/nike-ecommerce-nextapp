@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { priceCart, createPendingOrder, attachPaymentUrl, discardOrder, originOf, providerError } from "@/lib/server/checkout";
+import { priceCart, createPendingOrder, attachPaymentUrl, discardOrder, returnUrls, providerError } from "@/lib/server/checkout";
 import { getShopper } from "@/lib/server/shopper";
 import { jsonError, readJson } from "@/lib/server/http";
 import { STORE_NAME } from "@/config/store";
@@ -16,7 +16,7 @@ export const POST = async (request) => {
 
     const shopper = await getShopper();
     const order = await createPendingOrder({ priced, provider: "crypto", userId: shopper?.userId, email: shopper?.email });
-    const origin = originOf(request);
+    const urls = returnUrls(request, order);
 
     try {
         const response = await axios.post('https://api.commerce.coinbase.com/charges', {
@@ -24,8 +24,8 @@ export const POST = async (request) => {
             description: priced.lines.map((l) => `${l.quantity} × ${l.title}`).join(", ").slice(0, 200),
             local_price: { amount: String(priced.total), currency: priced.currency },
             pricing_type: "fixed_price",
-            redirect_url: `${origin}/checkout/success${order ? `?order=${order._id}` : ""}`,
-            cancel_url: `${origin}/cart`,
+            redirect_url: urls.success,
+            cancel_url: urls.cancel,
             metadata: { orderId: order ? String(order._id) : "" },
         }, {
             timeout: 20000,

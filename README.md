@@ -41,6 +41,7 @@ ADMIN_PASSWORD=a-strong-password
 ADMIN_SESSION_SECRET=a-long-random-string
 
 # Payments
+SITE_URL=https://your-store.example.com # public HTTPS address; payment providers send shoppers back here
 COINBASE_API_KEY=...                      # NEXT_PUBLIC_COINBASE_API_KEY is also accepted
 PAYUNIT_API_KEY=...                       # PayUnit falls back to the original sandbox credentials
 PAYUNIT_API_USER=...

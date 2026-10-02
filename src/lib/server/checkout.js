@@ -81,8 +81,32 @@ export const discardOrder = async (order) => {
 // Best-effort, human-readable reason from a failed payment provider request.
 export const providerError = (error) => {
   const data = error.response?.data;
-  const detail =
-    data?.error?.message ?? data?.message ?? data?.error ?? (typeof data === "string" ? data : null) ?? error.message;
-  const status = error.response?.status ? ` (HTTP ${error.response.status})` : "";
-  return `${String(detail).slice(0, 200)}${status}`;
+  let detail = data?.error?.message ?? data?.message ?? data?.error ?? (typeof data === "string" ? data : null) ?? error.message;
+  // Some gateways answer with an HTML error page; keep just its title.
+  if (typeof detail === "string" && /<html/i.test(detail)) {
+    detail = detail.match(/<title>([^<]*)<\/title>/i)?.[1]?.trim() || "The provider returned an error page";
+  }
+  const status = error.response?.status;
+  const hint = status === 401 || status === 403 ? " Check the API keys and mode in your environment settings." : "";
+  return `${String(detail).slice(0, 200)}${status ? ` (HTTP ${status})` : ""}.${hint}`;
+};
+
+/**
+ * Public HTTPS address of the store, used for the pages payment providers send
+ * shoppers back to. Providers reject http:// and localhost addresses, so set
+ * SITE_URL (e.g. https://your-store.vercel.app) when testing locally.
+ * Returns null when no usable address is available.
+ */
+export const publicSiteUrl = (request) => {
+  const candidate = (process.env.SITE_URL || originOf(request)).replace(/\/+$/, "");
+  return /^https:\/\/(?!localhost|127\.)[\w.-]+\.[\w-]+/.test(candidate) ? candidate : null;
+};
+
+// Where to send shoppers after paying. Falls back to the placeholder pages the
+// original checkout used when the store has no public HTTPS address yet.
+export const returnUrls = (request, order) => {
+  const site = publicSiteUrl(request);
+  return site
+    ? { success: `${site}/checkout/success${order ? `?order=${order._id}` : ""}`, cancel: `${site}/cart`, site }
+    : { success: "https://example.com/success", cancel: "https://example.com/cancel", site: null };
 };

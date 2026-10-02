@@ -1,7 +1,7 @@
 import axios from "axios";
 import crypto from "crypto";
 import { BASE_URL } from "@/utils/constants";
-import { priceCart, createPendingOrder, attachPaymentUrl, discardOrder, originOf, providerError } from "@/lib/server/checkout";
+import { priceCart, createPendingOrder, attachPaymentUrl, discardOrder, returnUrls, providerError } from "@/lib/server/checkout";
 import { getShopper } from "@/lib/server/shopper";
 import { jsonError, readJson } from "@/lib/server/http";
 import { NextResponse } from "next/server";
@@ -23,7 +23,7 @@ export const POST = async (request) => {
 
     const shopper = await getShopper();
     const order = await createPendingOrder({ priced, provider: "mobile", userId: shopper?.userId, email: shopper?.email });
-    const origin = originOf(request);
+    const urls = returnUrls(request, order);
     const { apiKey, user, password, mode, notifyUrl } = credentials();
     const transactionId = `pu-${order ? order._id : crypto.randomUUID()}`;
 
@@ -32,14 +32,14 @@ export const POST = async (request) => {
         currency: priced.currency,
         mode: "payment",
         transaction_id: transactionId,
-        success_url: `${origin}/checkout/success${order ? `?order=${order._id}` : ""}`,
-        cancel_url: `${origin}/cart`,
+        success_url: urls.success,
+        cancel_url: urls.cancel,
         return_url: notifyUrl,
         notify_url: notifyUrl,
         items: [
             ...priced.lines.map((line) => ({
                 price_description: { unit_amount: line.unitPrice },
-                product_description: { name: line.title, image_url: line.image ? `${origin}${line.image}` : undefined, about_product: line.colorway },
+                product_description: { name: line.title, image_url: urls.site && line.image ? `${urls.site}${line.image}` : undefined, about_product: line.colorway },
                 quantity: line.quantity,
             })),
             ...(priced.shipping ? [{ price_description: { unit_amount: priced.shipping }, product_description: { name: "Delivery" }, quantity: 1 }] : []),
