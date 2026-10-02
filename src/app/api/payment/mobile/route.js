@@ -49,6 +49,7 @@ export const POST = async (request) => {
 
     try {
         const result = await axios.post(`${BASE_URL}/api/gateway/checkout/initialize`, payload, {
+            timeout: 20000,
             headers: {
                 "x-api-key": apiKey,
                 mode,

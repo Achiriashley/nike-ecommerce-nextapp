@@ -28,6 +28,7 @@ export const POST = async (request) => {
             cancel_url: `${origin}/cart`,
             metadata: { orderId: order ? String(order._id) : "" },
         }, {
+            timeout: 20000,
             headers: { "X-CC-Api-Key": apiKey, "X-CC-Version": "2018-03-22", 'Content-Type': 'application/json', 'Accept': 'application/json' },
         });
         const url = response.data?.data?.hosted_url;

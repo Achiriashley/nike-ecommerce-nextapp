@@ -37,7 +37,8 @@ function Summary({ cart }) {
       if (!res.ok || !data.url) throw new Error(data.error || "Could not start checkout. Please try again.");
       window.location.assign(data.url);
     } catch (err) {
-      setError(err.message);
+      // fetch() rejects with a TypeError when the app's own server can't be reached.
+      setError(err instanceof TypeError ? "Couldn’t reach the store’s server. Check that it’s running, then try again." : err.message);
       setPending(null);
     }
   };
