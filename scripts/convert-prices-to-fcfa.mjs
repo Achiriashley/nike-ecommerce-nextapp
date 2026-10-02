@@ -26,11 +26,13 @@ const looksLikeDollars = (value) => {
   return Number.isFinite(n) && n > 0 && n < 1000 ? n : null;
 };
 
-const { default: Product } = await import("../src/model/Product.js");
+// Works on the raw collection so the script runs on any Node version
+// (the app's model files use ES module syntax that Node 20 can't load here).
 await mongoose.connect(process.env.MONGO_DB);
+const products = mongoose.connection.collection("products");
 
 let changed = 0;
-for (const product of await Product.find()) {
+for (const product of await products.find().toArray()) {
   const price = looksLikeDollars(product.price);
   const compare = looksLikeDollars(product.compareAtPrice);
   if (price === null && compare === null) continue;
@@ -38,7 +40,7 @@ for (const product of await Product.find()) {
   if (price !== null) update.price = String(toFcfa(price));
   if (compare !== null) update.compareAtPrice = toFcfa(compare);
   console.log(`${product.title} ${product.colorway ?? ""}: ${product.price} -> ${update.price ?? product.price} FCFA`);
-  if (apply) await Product.updateOne({ _id: product._id }, update);
+  if (apply) await products.updateOne({ _id: product._id }, { $set: update });
   changed++;
 }
 
