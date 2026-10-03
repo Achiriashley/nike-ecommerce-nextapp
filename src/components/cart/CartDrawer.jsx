@@ -32,7 +32,7 @@ export default function CartDrawer() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Button asChild variant="outline" onClick={close}><Link href="/cart">View bag</Link></Button>
-              <Button asChild onClick={close}><Link href="/cart#checkout">Checkout</Link></Button>
+              <Button asChild onClick={close}><Link href="/cart#delivery">Checkout</Link></Button>
             </div>
           </div>
         )
