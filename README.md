@@ -11,7 +11,7 @@ A sneaker storefront built with Next.js (App Router), Clerk, MongoDB and Tailwin
 - Customer reviews (signed-in Clerk users can write, edit and delete one review per product)
 - Bag with sizes, quantities, free-delivery progress and live re-pricing; slide-out bag drawer
 - Wishlist and recently viewed history, saved in the browser
-- Checkout with mobile money (Campay for MTN/Orange, or PayUnit) or crypto (Coinbase Commerce); totals are calculated on the server and Campay payments are confirmed automatically
+- Checkout with mobile money (Campay for MTN/Orange, or PayUnit) or optional crypto (Coinbase, hidden by default); totals are calculated on the server and Campay payments are confirmed automatically
 - Account page with order history for signed-in customers
 - Newsletter sign-up, help centre with FAQ and contact form (EmailJS)
 
@@ -42,6 +42,7 @@ ADMIN_SESSION_SECRET=a-long-random-string
 
 # Payments
 SITE_URL=https://your-store.example.com # public HTTPS address; payment providers send shoppers back here
+NEXT_PUBLIC_CRYPTO_PAYMENTS=off           # "on" shows "Pay with crypto" (needs a Coinbase key; see below)
 COINBASE_API_KEY=...                      # NEXT_PUBLIC_COINBASE_API_KEY is also accepted
 CAMPAY_USERNAME=...                       # Campay app API username + password (or CAMPAY_TOKEN)
 CAMPAY_PASSWORD=...                       # When set, "Pay with mobile money" uses Campay (MTN + Orange)
@@ -62,6 +63,12 @@ npm run seed
 ```
 
 Once the database has products, the store shows only those, and they can be managed from the admin dashboard.
+
+### Crypto payments
+
+The crypto checkout is hidden by default. It was built for Coinbase Commerce, which closed on
+31 March 2026; its replacement, Coinbase Business, only onboards merchants registered in the
+US or Singapore, and the checkout would need updating to Coinbase Business's Checkouts API.
 
 ### Campay webhook
 

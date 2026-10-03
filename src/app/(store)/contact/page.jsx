@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Mail, MapPin } from "lucide-react";
 import ContactForm from "@/components/contact/ContactForm";
-import { FREE_SHIPPING_THRESHOLD, FLAT_SHIPPING, RETURN_DAYS } from "@/config/store";
+import { FREE_SHIPPING_THRESHOLD, FLAT_SHIPPING, PAYMENT_METHODS_TEXT, RETURN_DAYS } from "@/config/store";
 import { formatPrice } from "@/lib/format";
 
 export const metadata = { title: "Help & contact" };
@@ -17,7 +17,7 @@ const FAQ = [
   },
   {
     q: "Which payment methods do you accept?",
-    a: "You can pay with mobile money (via PayUnit) or with cryptocurrency (via Coinbase Commerce). You complete payment on the provider’s secure page.",
+    a: `You can pay with ${PAYMENT_METHODS_TEXT}. You approve the payment on your phone or on the provider’s secure page.`,
   },
   {
     q: "How do I find my size?",

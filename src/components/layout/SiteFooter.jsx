@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ShieldCheck, RotateCcw, Truck, MessageCircle } from "lucide-react";
 import Logo from "./Logo";
 import NewsletterForm from "./NewsletterForm";
-import { FREE_SHIPPING_THRESHOLD, RETURN_DAYS, STORE_NAME } from "@/config/store";
+import { FREE_SHIPPING_THRESHOLD, PAYMENT_METHODS_TEXT, RETURN_DAYS, STORE_NAME } from "@/config/store";
 import { formatPrice } from "@/lib/format";
 
 const COLUMNS = [
@@ -48,7 +48,7 @@ const COLUMNS = [
 const PROMISES = [
   { icon: Truck, title: "Free delivery", text: `On orders over ${formatPrice(FREE_SHIPPING_THRESHOLD)}` },
   { icon: RotateCcw, title: `${RETURN_DAYS}-day returns`, text: "Changed your mind? Send it back" },
-  { icon: ShieldCheck, title: "Secure checkout", text: "Crypto or mobile money" },
+  { icon: ShieldCheck, title: "Secure checkout", text: PAYMENT_METHODS_TEXT },
   { icon: MessageCircle, title: "Need help?", text: "Our team is a message away" },
 ];
 
@@ -96,7 +96,7 @@ export default function SiteFooter() {
       <div className="border-t border-white/10">
         <div className="container flex flex-col gap-2 py-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} {STORE_NAME}. All rights reserved.</p>
-          <p>All prices in FCFA. Pay securely with MTN Mobile Money, Orange Money or crypto.</p>
+          <p>All prices in FCFA. Pay securely with {PAYMENT_METHODS_TEXT}.</p>
         </div>
       </div>
     </footer>

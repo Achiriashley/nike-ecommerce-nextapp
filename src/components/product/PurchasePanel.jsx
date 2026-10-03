@@ -10,7 +10,7 @@ import Badge from "@/components/ui/Badge";
 import { Button } from "@/components/ui/button";
 import WishlistButton from "./WishlistButton";
 import { useStoreCart } from "@/store/cart.store";
-import { FREE_SHIPPING_THRESHOLD, RETURN_DAYS } from "@/config/store";
+import { FREE_SHIPPING_THRESHOLD, PAYMENT_METHODS_TEXT, RETURN_DAYS } from "@/config/store";
 import { formatPrice, genderLabel } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -155,7 +155,7 @@ export default function PurchasePanel({ product, colourways }) {
           <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-ink" aria-hidden />
           <div className="text-sm">
             <p className="font-semibold text-ink">Secure checkout</p>
-            <p className="text-neutral-600">Pay with crypto or mobile money.</p>
+            <p className="text-neutral-600">Pay with {PAYMENT_METHODS_TEXT}.</p>
           </div>
         </li>
       </ul>

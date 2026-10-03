@@ -17,7 +17,7 @@ import { useStoreFavorite } from "@/store/favorite.store";
 import { useHydrated } from "@/store/hydration.store";
 import { useCartLines } from "@/hooks/useCartLines";
 import { useCatalog } from "@/hooks/useCatalog";
-import { MAX_QUANTITY } from "@/config/store";
+import { CRYPTO_PAYMENTS_ENABLED, MAX_QUANTITY } from "@/config/store";
 import { formatPrice } from "@/lib/format";
 
 function Summary({ cart }) {
@@ -72,10 +72,12 @@ function Summary({ cart }) {
             Pay with mobile money
           </Button>
           <p className="-mt-1 text-center text-xs text-neutral-500">MTN Mobile Money or Orange Money</p>
-          <Button size="lg" variant="outline" onClick={() => checkout("crypto")} disabled={Boolean(pending) || !cart.purchasable.length}>
-            {pending === "crypto" ? <Loader2 className="animate-spin" aria-hidden /> : <Bitcoin aria-hidden />}
-            Pay with crypto
-          </Button>
+          {CRYPTO_PAYMENTS_ENABLED && (
+            <Button size="lg" variant="outline" onClick={() => checkout("crypto")} disabled={Boolean(pending) || !cart.purchasable.length}>
+              {pending === "crypto" ? <Loader2 className="animate-spin" aria-hidden /> : <Bitcoin aria-hidden />}
+              Pay with crypto
+            </Button>
+          )}
         </div>
         {error && (
           <p className="mt-4 flex items-start gap-2 rounded-xl bg-[#fdecea] p-3 text-sm text-sale" role="alert">

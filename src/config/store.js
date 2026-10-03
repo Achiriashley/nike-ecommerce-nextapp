@@ -8,6 +8,14 @@ export const PAYMENT_CURRENCY = "XAF";
 export const FREE_SHIPPING_THRESHOLD = 100000;
 export const FLAT_SHIPPING = 2500;
 export const RETURN_DAYS = 30;
+
+// Crypto checkout (Coinbase) is hidden unless NEXT_PUBLIC_CRYPTO_PAYMENTS=on.
+// Coinbase Commerce closed on 31 March 2026; its replacement, Coinbase Business,
+// only accepts merchants registered in the US or Singapore.
+export const CRYPTO_PAYMENTS_ENABLED = process.env.NEXT_PUBLIC_CRYPTO_PAYMENTS === "on";
+export const PAYMENT_METHODS_TEXT = CRYPTO_PAYMENTS_ENABLED
+  ? "MTN Mobile Money, Orange Money or crypto"
+  : "MTN Mobile Money or Orange Money";
 export const MAX_QUANTITY = 10;
 
 export const CATEGORIES = [
