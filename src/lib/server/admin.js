@@ -6,10 +6,13 @@ import { NextResponse } from "next/server";
 export const ADMIN_COOKIE = "admin_session";
 const SESSION_HOURS = 8;
 
-// Defaults keep the original admin login working; set the env vars in production.
-const adminEmail = () => process.env.ADMIN_EMAIL || "admin237@nike.com";
-const adminPassword = () => process.env.ADMIN_PASSWORD || "admin237";
-const secret = () => process.env.ADMIN_SESSION_SECRET || `fallback:${adminEmail()}:${adminPassword()}`;
+// Admin credentials come only from the environment (.env.local or the host's settings).
+// Without ADMIN_EMAIL, ADMIN_PASSWORD and ADMIN_SESSION_SECRET, admin sign-in is disabled.
+const adminEmail = () => process.env.ADMIN_EMAIL?.trim() ?? "";
+const adminPassword = () => process.env.ADMIN_PASSWORD ?? "";
+const secret = () => process.env.ADMIN_SESSION_SECRET ?? "";
+
+export const isAdminConfigured = () => Boolean(adminEmail() && adminPassword() && secret());
 
 const sign = (value) => crypto.createHmac("sha256", secret()).update(value).digest("hex");
 
@@ -20,6 +23,7 @@ const safeEqual = (a, b) => {
 };
 
 export const checkCredentials = (email, password) =>
+  isAdminConfigured() &&
   safeEqual(String(email ?? "").trim().toLowerCase(), adminEmail().toLowerCase()) &&
   safeEqual(String(password ?? ""), adminPassword());
 
@@ -29,7 +33,7 @@ export const createSessionToken = () => {
 };
 
 export const verifySessionToken = (token) => {
-  if (!token) return false;
+  if (!token || !isAdminConfigured()) return false;
   const [expires, signature] = String(token).split(".");
   if (!expires || !signature || Number(expires) < Date.now()) return false;
   return safeEqual(signature, sign(expires));

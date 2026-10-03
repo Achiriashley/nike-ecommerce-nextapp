@@ -35,7 +35,7 @@ MONGO_DB=mongodb+srv://...                # MongoDB connection string
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...  # Clerk
 CLERK_SECRET_KEY=sk_...
 
-# Admin dashboard (the defaults are the original demo credentials; change them in production)
+# Admin dashboard (required: admin sign-in is disabled until all three are set)
 ADMIN_EMAIL=you@example.com
 ADMIN_PASSWORD=a-strong-password
 ADMIN_SESSION_SECRET=a-long-random-string
