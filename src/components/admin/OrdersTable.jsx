@@ -1,7 +1,7 @@
 "use client";
 import { Fragment, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronDown, Receipt } from "lucide-react";
+import { ChevronDown, Receipt, MapPin, Phone, Mail } from "lucide-react";
 import { toast } from "react-toastify";
 import EmptyState from "@/components/ui/EmptyState";
 import { NativeSelect } from "@/components/ui/input";
@@ -76,7 +76,17 @@ export default function OrdersTable({ orders }) {
                         <p className="font-medium text-ink">{orderRef(o.id)}</p>
                         <p className="text-neutral-500">{formatDate(o.createdAt)}</p>
                       </td>
-                      <td className="px-4 py-3 text-neutral-700">{o.email ?? <span className="text-neutral-400">Guest</span>}</td>
+                      <td className="px-4 py-3 text-neutral-700">
+                        {o.delivery ? (
+                          <>
+                            <p className="font-medium text-ink">{o.delivery.name}</p>
+                            <p className="text-neutral-500">{o.delivery.phone} · {o.delivery.city}</p>
+                          </>
+                        ) : (
+                          o.email ?? <span className="text-neutral-400">Guest</span>
+                        )}
+                        {!o.userId && o.delivery && <span className="text-xs text-neutral-400">Guest</span>}
+                      </td>
                       <td className="px-4 py-3 text-neutral-700">
                         {o.provider === "crypto" ? "Crypto" : "Mobile money"}
                         {o.gateway && <span className="block text-xs capitalize text-neutral-500">{o.gateway}</span>}
@@ -92,7 +102,7 @@ export default function OrdersTable({ orders }) {
                         </div>
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <button onClick={() => setOpen(open === o.id ? null : o.id)} aria-expanded={open === o.id} className="rounded-full p-2 text-neutral-500 hover:bg-surface hover:text-ink" aria-label={`Show items in ${orderRef(o.id)}`}>
+                        <button onClick={() => setOpen(open === o.id ? null : o.id)} aria-expanded={open === o.id} className="rounded-full p-2 text-neutral-500 hover:bg-surface hover:text-ink" aria-label={`Show details of ${orderRef(o.id)}`}>
                           <ChevronDown className={cn("h-4 w-4 transition", open === o.id && "rotate-180")} />
                         </button>
                       </td>
@@ -100,6 +110,7 @@ export default function OrdersTable({ orders }) {
                     {open === o.id && (
                       <tr className="bg-surface/40">
                         <td colSpan={6} className="px-4 py-4">
+                          <div className="grid gap-6 md:grid-cols-[1fr_300px]">
                           <ul className="space-y-1.5">
                             {o.items.map((item, i) => (
                               <li key={i} className="flex justify-between gap-4">
@@ -109,6 +120,21 @@ export default function OrdersTable({ orders }) {
                             ))}
                             <li className="flex justify-between gap-4 border-t pt-1.5 text-neutral-600"><span>Delivery</span><span className="tabular-nums">{o.shipping ? formatPrice(o.shipping) : "Free"}</span></li>
                           </ul>
+                          <div className="space-y-1.5 text-neutral-700">
+                            <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">Deliver to</p>
+                            {o.delivery ? (
+                              <>
+                                <p className="font-medium text-ink">{o.delivery.name}</p>
+                                <p className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />{o.delivery.address}, {o.delivery.city}</p>
+                                <p className="flex items-center gap-2"><Phone className="h-4 w-4 shrink-0" aria-hidden /><a href={`tel:${o.delivery.phone.replace(/\s/g, "")}`} className="underline underline-offset-4">{o.delivery.phone}</a></p>
+                                {(o.delivery.email || o.email) && <p className="flex items-center gap-2"><Mail className="h-4 w-4 shrink-0" aria-hidden />{o.delivery.email || o.email}</p>}
+                                {o.delivery.notes && <p className="rounded-lg bg-white p-2.5 text-neutral-600">“{o.delivery.notes}”</p>}
+                              </>
+                            ) : (
+                              <p className="text-neutral-500">No delivery details (placed before the delivery form was added).</p>
+                            )}
+                          </div>
+                          </div>
                         </td>
                       </tr>
                     )}

@@ -12,28 +12,50 @@ import { NativeSelect } from "@/components/ui/input";
 import ProductRail from "@/components/product/ProductRail";
 import SectionHeading from "@/components/ui/SectionHeading";
 import FreeShippingMeter from "./FreeShippingMeter";
+import DeliveryForm, { DELIVERY_FORM_ID, fieldId } from "./DeliveryForm";
 import { useStoreCart } from "@/store/cart.store";
 import { useStoreFavorite } from "@/store/favorite.store";
+import { useStoreDelivery } from "@/store/delivery.store";
 import { useHydrated } from "@/store/hydration.store";
 import { useCartLines } from "@/hooks/useCartLines";
 import { useCatalog } from "@/hooks/useCatalog";
 import { CRYPTO_PAYMENTS_ENABLED, MAX_QUANTITY } from "@/config/store";
 import { formatPrice } from "@/lib/format";
+import { validateDelivery } from "@/lib/delivery";
 
-function Summary({ cart }) {
+// Highlights invalid delivery fields and brings the first one into view.
+const showDeliveryErrors = (errors, setFieldErrors) => {
+  setFieldErrors(errors);
+  const first = ["name", "phone", "city", "email", "address", "notes"].find((f) => errors[f]);
+  document.getElementById(DELIVERY_FORM_ID)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (first) document.getElementById(fieldId(first))?.focus({ preventScroll: true });
+};
+
+function Summary({ cart, setFieldErrors }) {
   const [pending, setPending] = useState(null);
   const [error, setError] = useState("");
 
   const checkout = async (provider) => {
-    setPending(provider);
     setError("");
+    const { data: delivery, errors } = validateDelivery(useStoreDelivery.getState().details);
+    if (errors) {
+      showDeliveryErrors(errors, setFieldErrors);
+      setError("Add your delivery details so we know where to bring your order.");
+      return;
+    }
+    setFieldErrors({});
+    setPending(provider);
     try {
       const res = await fetch(provider === "crypto" ? "/api/payment" : "/api/payment/mobile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: cart.purchasable.map(({ slug, size, quantity }) => ({ slug, size, quantity })) }),
+        body: JSON.stringify({
+          items: cart.purchasable.map(({ slug, size, quantity }) => ({ slug, size, quantity })),
+          delivery,
+        }),
       });
       const data = await res.json().catch(() => ({}));
+      if (data.fields) showDeliveryErrors(data.fields, setFieldErrors);
       if (!res.ok || !data.url) throw new Error(data.error || "Could not start checkout. Please try again.");
       window.location.assign(data.url);
     } catch (err) {
@@ -90,7 +112,7 @@ function Summary({ cart }) {
       </div>
       <SignedOut>
         <p className="mt-4 rounded-2xl bg-surface p-4 text-sm text-neutral-700">
-          <Link href="/auth/signin?redirect_url=/cart" className="font-semibold text-ink underline underline-offset-4">Sign in</Link> to save this order to your account and track it later.
+          Checking out as a guest. <Link href="/auth/signin?redirect_url=/cart" className="font-semibold text-ink underline underline-offset-4">Sign in</Link> if you’d like to see this order in your account later.
         </p>
       </SignedOut>
     </aside>
@@ -104,6 +126,8 @@ export default function CartView() {
   const toggleFavorite = useStoreFavorite((s) => s.toggle);
   const isSaved = useStoreFavorite((s) => s.has);
   const { data: products = [] } = useCatalog();
+  const [fieldErrors, setFieldErrors] = useState({});
+  const clearFieldError = (name) => setFieldErrors(({ [name]: _, ...rest }) => rest);
 
   const moveToWishlist = (line) => {
     if (!isSaved(line.slug)) toggleFavorite(line);
@@ -188,8 +212,9 @@ export default function CartView() {
                 </li>
               ))}
             </ul>
+            <DeliveryForm errors={fieldErrors} onEdit={clearFieldError} />
           </section>
-          <Summary cart={cart} />
+          <Summary cart={cart} setFieldErrors={setFieldErrors} />
         </div>
       )}
 

@@ -64,7 +64,7 @@ export default async function AdminOverview() {
                 <li key={o.id} className="flex items-center justify-between gap-3 px-5 py-3.5 text-sm">
                   <div className="min-w-0">
                     <p className="font-medium text-ink">{orderRef(o.id)}</p>
-                    <p className="truncate text-neutral-500">{o.email ?? "Guest"} · {formatDate(o.createdAt)}</p>
+                    <p className="truncate text-neutral-500">{o.delivery?.name ?? o.email ?? "Guest"} · {formatDate(o.createdAt)}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <Badge tone={ORDER_STATUS_TONES[o.status]} className="capitalize">{o.status}</Badge>

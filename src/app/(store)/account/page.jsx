@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Package, Heart, MessageCircle } from "lucide-react";
+import { Package, Heart, MessageCircle, MapPin } from "lucide-react";
 import ProductImage from "@/components/ui/ProductImage";
 import EmptyState from "@/components/ui/EmptyState";
 import Badge from "@/components/ui/Badge";
@@ -84,6 +84,12 @@ export default async function AccountPage() {
                       </li>
                     ))}
                   </ul>
+                  {order.delivery && (
+                    <p className="mt-4 flex items-start gap-2 border-t pt-4 text-sm text-neutral-600">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+                      <span>Delivering to <span className="text-ink">{order.delivery.name}</span>, {order.delivery.address}, {order.delivery.city} · {order.delivery.phone}</span>
+                    </p>
+                  )}
                   {order.status === "pending" && order.paymentUrl && (
                     <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-brand-soft p-3 text-sm">
                       <span className="text-ink">Payment not confirmed yet.</span>

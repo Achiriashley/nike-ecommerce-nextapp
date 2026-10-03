@@ -11,6 +11,7 @@ A sneaker storefront built with Next.js (App Router), Clerk, MongoDB and Tailwin
 - Customer reviews (signed-in Clerk users can write, edit and delete one review per product)
 - Bag with sizes, quantities, free-delivery progress and live re-pricing; slide-out bag drawer
 - Wishlist and recently viewed history, saved in the browser
+- Guest checkout with a delivery details form (name, phone, city, neighbourhood/landmark, notes), remembered in the browser and prefilled for signed-in customers
 - Checkout with mobile money (Campay for MTN/Orange, or PayUnit) or optional crypto (Coinbase, hidden by default); totals are calculated on the server and Campay payments are confirmed automatically
 - Account page with order history for signed-in customers
 - Newsletter sign-up, help centre with FAQ and contact form (EmailJS)
@@ -18,7 +19,7 @@ A sneaker storefront built with Next.js (App Router), Clerk, MongoDB and Tailwin
 **Admin** (`/admin/login`)
 - Overview of revenue, orders, products, subscribers, low stock and top-rated products
 - Create, edit and delete products (image upload or URL), and import the starter catalog
-- Order list with status updates (pending → paid → shipped → delivered / cancelled)
+- Order list with delivery details (who, where, phone) and status updates (pending → paid → shipped → delivered / cancelled)
 - Newsletter subscribers
 
 ## Getting started

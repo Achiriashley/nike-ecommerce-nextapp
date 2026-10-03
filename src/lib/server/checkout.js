@@ -3,6 +3,10 @@ import { getProducts } from "@/lib/server/products";
 import { MAX_QUANTITY, PAYMENT_CURRENCY, shippingFor } from "@/config/store";
 import connectDB, { isDbConfigured } from "@/db/connectDB";
 import Order from "@/model/Order";
+import { NextResponse } from "next/server";
+import { validateDelivery } from "@/lib/delivery";
+import { getShopper } from "@/lib/server/shopper";
+import { jsonError, readJson } from "@/lib/server/http";
 
 // Prices every line from the server-side catalog so totals can't be tampered with.
 export const priceCart = async (items) => {
@@ -33,13 +37,28 @@ export const priceCart = async (items) => {
 };
 
 // Records the order when a database is available. Payment still works without one.
-export const createPendingOrder = async ({ priced, provider, userId, email }) => {
+// Reads the checkout request: prices the bag and validates delivery details.
+// Returns { priced, delivery, shopper } or { error } (a ready-to-send response).
+export const prepareCheckout = async (request) => {
+  const body = (await readJson(request)) ?? {};
+  const priced = await priceCart(body.items);
+  if (priced.error) return { error: jsonError(priced.error) };
+  const { data: delivery, errors } = validateDelivery(body.delivery);
+  if (errors) {
+    return { error: NextResponse.json({ error: "Please check your delivery details", fields: errors }, { status: 400 }) };
+  }
+  const shopper = await getShopper();
+  return { priced, delivery, shopper };
+};
+
+export const createPendingOrder = async ({ priced, provider, userId, email, delivery }) => {
   if (!isDbConfigured()) return null;
   try {
     await connectDB();
     return await Order.create({
       userId: userId ?? undefined,
-      email: email ?? undefined,
+      email: email ?? delivery?.email ?? undefined,
+      delivery,
       items: priced.lines,
       subtotal: priced.subtotal,
       shipping: priced.shipping,

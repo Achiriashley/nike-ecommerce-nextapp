@@ -1,7 +1,7 @@
 import axios from "axios";
 import crypto from "crypto";
 import { BASE_URL } from "@/utils/constants";
-import { priceCart, createPendingOrder, attachPaymentUrl, discardOrder, returnUrls, providerError } from "@/lib/server/checkout";
+import { prepareCheckout, createPendingOrder, attachPaymentUrl, discardOrder, returnUrls, providerError } from "@/lib/server/checkout";
 import { getShopper } from "@/lib/server/shopper";
 import { isCampayConfigured, campayAmount, createPaymentLink } from "@/lib/server/campay";
 import { STORE_NAME } from "@/config/store";
@@ -21,9 +21,8 @@ const credentials = () => ({
 });
 
 // Campay: hosted page where the shopper pays with MTN Mobile Money or Orange Money.
-const campayCheckout = async (request, priced) => {
-    const shopper = await getShopper();
-    const order = await createPendingOrder({ priced, provider: "mobile", userId: shopper?.userId, email: shopper?.email });
+const campayCheckout = async (request, { priced, delivery, shopper }) => {
+    const order = await createPendingOrder({ priced, delivery, provider: "mobile", userId: shopper?.userId, email: shopper?.email });
     if (!order) return jsonError("Mobile money checkout needs the database to record your order. Please try again later.", 503);
     const urls = returnUrls(request, order);
     try {
@@ -49,12 +48,12 @@ const campayCheckout = async (request, priced) => {
 };
 
 export const POST = async (request) => {
-    const priced = await priceCart((await readJson(request))?.items);
-    if (priced.error) return jsonError(priced.error);
-    if (isCampayConfigured()) return campayCheckout(request, priced);
+    const checkout = await prepareCheckout(request);
+    if (checkout.error) return checkout.error;
+    if (isCampayConfigured()) return campayCheckout(request, checkout);
 
-    const shopper = await getShopper();
-    const order = await createPendingOrder({ priced, provider: "mobile", userId: shopper?.userId, email: shopper?.email });
+    const { priced, delivery, shopper } = checkout;
+    const order = await createPendingOrder({ priced, delivery, provider: "mobile", userId: shopper?.userId, email: shopper?.email });
     const urls = returnUrls(request, order);
     const { apiKey, user, password, mode, notifyUrl } = credentials();
     const transactionId = `pu-${order ? order._id : crypto.randomUUID()}`;

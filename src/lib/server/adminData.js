@@ -7,6 +7,9 @@ const serializeOrder = (o) => ({
   id: String(o._id),
   email: o.email ?? null,
   userId: o.userId ?? null,
+  delivery: o.delivery
+    ? { name: o.delivery.name, phone: o.delivery.phone, email: o.delivery.email ?? null, city: o.delivery.city, address: o.delivery.address, notes: o.delivery.notes ?? null }
+    : null,
   items: o.items.map((i) => ({ ...i })),
   subtotal: o.subtotal,
   shipping: o.shipping,

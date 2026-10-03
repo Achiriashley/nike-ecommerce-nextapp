@@ -12,9 +12,20 @@ const orderItemSchema = new Schema({
     unitPrice: {type: Number, required: true},
 }, {_id: false});
 
+const deliverySchema = new Schema({
+    name: {type: String, required: true},
+    phone: {type: String, required: true},
+    email: {type: String},
+    city: {type: String, required: true},
+    address: {type: String, required: true},
+    notes: {type: String},
+}, {_id: false});
+
 const orderSchema = new Schema({
     userId: {type: String, index: true},
     email: {type: String},
+    // Where and to whom the order is delivered (older orders may not have it).
+    delivery: {type: deliverySchema},
     items: {type: [orderItemSchema], required: true},
     subtotal: {type: Number, required: true},
     shipping: {type: Number, required: true},

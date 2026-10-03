@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { priceCart, createPendingOrder, attachPaymentUrl, discardOrder, returnUrls, providerError } from "@/lib/server/checkout";
+import { prepareCheckout, createPendingOrder, attachPaymentUrl, discardOrder, returnUrls, providerError } from "@/lib/server/checkout";
 import { getShopper } from "@/lib/server/shopper";
 import { jsonError, readJson } from "@/lib/server/http";
 import { STORE_NAME } from "@/config/store";
@@ -11,11 +11,10 @@ export const POST = async (request) => {
     const apiKey = process.env.COINBASE_API_KEY || process.env.NEXT_PUBLIC_COINBASE_API_KEY;
     if (!apiKey) return jsonError("Crypto payments are not configured", 503);
 
-    const priced = await priceCart((await readJson(request))?.items);
-    if (priced.error) return jsonError(priced.error);
-
-    const shopper = await getShopper();
-    const order = await createPendingOrder({ priced, provider: "crypto", userId: shopper?.userId, email: shopper?.email });
+    const checkout = await prepareCheckout(request);
+    if (checkout.error) return checkout.error;
+    const { priced, delivery, shopper } = checkout;
+    const order = await createPendingOrder({ priced, delivery, provider: "crypto", userId: shopper?.userId, email: shopper?.email });
     const urls = returnUrls(request, order);
 
     try {
