@@ -3,6 +3,7 @@ import axios from "axios";
 import mongoose from "mongoose";
 import connectDB, { isDbConfigured } from "@/db/connectDB";
 import Order from "@/model/Order";
+import { sendOrderPaidEmailsLater } from "@/lib/server/orderEmails";
 
 // Campay (MTN Mobile Money and Orange Money, Cameroon).
 // Credentials come from the Campay dashboard: either the app's API username and
@@ -91,6 +92,7 @@ export const syncCampayPayment = async ({ orderId, reference }) => {
       order.status = next;
       order.paymentReference = tx.reference ?? ref;
       await order.save();
+      if (next === "paid") sendOrderPaidEmailsLater(order._id);
     }
     return order.status;
   } catch (error) {

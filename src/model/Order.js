@@ -37,6 +37,8 @@ const orderSchema = new Schema({
     paymentReference: {type: String, index: true},
     paymentUrl: {type: String},
     status: {type: String, enum: ORDER_STATUSES, default: "pending"},
+    // Set once the "order paid" emails have been sent, so they go out only once.
+    paidEmailSentAt: {type: Date},
 }, {timestamps: true});
 
 export default mongoose.models.Order || mongoose.model('Order', orderSchema);

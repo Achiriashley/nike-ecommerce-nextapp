@@ -13,6 +13,7 @@ A sneaker storefront built with Next.js (App Router), Clerk, MongoDB and Tailwin
 - Wishlist and recently viewed history, saved in the browser
 - Guest checkout with a delivery details form (name, phone, city, neighbourhood/landmark, notes), remembered in the browser and prefilled for signed-in customers
 - Checkout with mobile money (Campay for MTN/Orange, or PayUnit) or optional crypto (Coinbase, hidden by default); totals are calculated on the server and Campay payments are confirmed automatically
+- Order confirmation emails to customers and new-order alerts to the store (Gmail or any SMTP)
 - Account page with order history for signed-in customers
 - Newsletter sign-up, help centre with FAQ and contact form (EmailJS)
 
@@ -52,6 +53,12 @@ PAYUNIT_API_KEY=...                       # PayUnit falls back to the original s
 PAYUNIT_API_USER=...
 PAYUNIT_API_PASSWORD=...
 PAYUNIT_MODE=test
+
+# Order emails (optional; without these no emails are sent)
+SMTP_USER=yourstore@gmail.com             # Gmail address that sends the emails
+SMTP_PASS=abcd efgh ijkl mnop             # Gmail app password (not your normal password)
+ORDER_NOTIFY_EMAIL=you@example.com        # where "new paid order" alerts go (defaults to ADMIN_EMAIL)
+# SMTP_HOST=smtp.gmail.com SMTP_PORT=465 MAIL_FROM="AshKicks <orders@your-domain>"  # other providers
 ```
 
 ### Products
@@ -76,6 +83,15 @@ US or Singapore, and the checkout would need updating to Coinbase Business's Che
 In the Campay dashboard, set the webhook URL to `https://<your-site>/api/payment/campay/webhook`.
 Orders are marked paid after the app confirms the payment with Campay's API (on the webhook,
 when the shopper returns to the success page, and when they open their account page).
+
+### Order emails
+
+When an order is paid, the customer gets a confirmation email (if they gave an email address or were
+signed in) and the store inbox gets a "new paid order" alert with the delivery details. Each order is
+emailed once. When an admin marks an order paid by hand, only the customer is emailed.
+
+With Gmail: turn on 2-Step Verification, create an app password at
+https://myaccount.google.com/apppasswords, and use it as `SMTP_PASS`.
 
 ### Store settings
 
