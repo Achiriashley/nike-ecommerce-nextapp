@@ -1,4 +1,4 @@
-# Nike Store
+# AshKicks
 
 A sneaker storefront built with Next.js (App Router), Clerk, MongoDB and Tailwind CSS.
 
